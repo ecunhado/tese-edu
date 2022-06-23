@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sliding_mode</name>
+  <version>0.0.0</version>
+  <description>The sliding_mode package</description>
+
+  <maintainer email="eduardo.m.a.cunha@tecnico.ulisboa.pt">Eduardo Cunha</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>medusa_gimmicks_library</depend>
+  <depend>auv_msgs</depend>
+  <depend>dsor_utils</depend>
+
+  <!-- Libraries to generate the messages and services -->
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+</package>
