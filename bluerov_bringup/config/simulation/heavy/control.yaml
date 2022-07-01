@@ -61,16 +61,14 @@ sliding_mode:
     mass: 11.5 # (kg)
     Iz: 0.245 # inertia about the Z axis
     Xu: -0.1213 # linear damping
-    Xdu: 27.08 # hydrodynamic added mass
+    Xdu: -27.08 # hydrodynamic added mass
     Xuu: -23.9000
     Yv: -1.1732 # linear damping
-    Ydv: 25.952 # hydrodynamic added mass
+    Ydv: -25.952 # hydrodynamic added mass
     Yvv: -46.2700
     Nr: -0.5 # linear damping
-    Ndr: 1 # hydrodynamic added mass
+    Ndr: -1 # hydrodynamic added mass
     Nrr: -1
-    # zg: 0.0 # center of gravity in body axis (m)
-    # vehicle_density: 1.0 # TO DEFINE LATER
     # inertia_tensor: [1000.0, 1000.0, 4.14]  # diagonal (3x3) moment of inertia matrix (kg/m2)
     # linear_damping_tensor: [0.0, -55.1, -4.1879, -3000.0, -3000.0, -4.14] # diagonal (6x6) matrix with linear damping
     # quadratic_damping_tensor: [-27.5, -101.0, -40.9649,  -3000.0, -3000.0, -6.23] # diagonal (6x6) matrix with quadratic damping

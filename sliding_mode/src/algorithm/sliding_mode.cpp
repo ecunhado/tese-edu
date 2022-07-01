@@ -178,7 +178,10 @@ void SlidingMode::updateVehicleState(const auv_msgs::NavigationStatus &msg) {
  * integrals use the trapezoidal approximation
  */
 void SlidingMode::updateIntegralsAndDerivatives() {
-  // current time
+  // Current time
+	// We don't need to subtract the time at the start of the program (init_time)
+	// because here we only use the difference between last and current time, which
+	// will be the same either way
   ros::Time current_time = ros::Time::now();
 
   // if after first iteration
@@ -198,6 +201,8 @@ void SlidingMode::updateIntegralsAndDerivatives() {
 
     // derivative of yaw REFERENCE
     this->d_yaw_ref_ = (this->yaw_ref_ - this->last_yaw_ref_)/(current_time - this->last_timestamp_).toSec();
+		// prevent large spikes in the derivative of yaw REFERENCE
+		// this->d_yaw_ref_ = (abs(this->d_yaw_ref_) > 10*abs(this->last_d_yaw_ref_)) ? this->last_d_yaw_ref_ : this->d_yaw_ref_;
 
 		// if after second iteration
 		if (this->update_iteration_ > 1) {
@@ -243,6 +248,8 @@ Tau SlidingMode::computeForcesTorques() {
 
 	this->buildDebugMessage(tau.u, tau.v, tau.r);
 
+	// tau.r = 0;
+
 	this->forces_torques_iteration_++;
 
 	return tau;
@@ -273,7 +280,7 @@ double SlidingMode::computeYawError(double yaw, double yaw_ref) {
 void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 
 	// update debug message
-	// this->debug_msg_.header;
+	this->debug_msg_.header.stamp = this->last_timestamp_;
 	this->debug_msg_.alpha_error = this->alpha_error_;
 	this->debug_msg_.beta_error = this->beta_error_;
 	this->debug_msg_.yaw_error = this->yaw_error_;
@@ -372,6 +379,7 @@ double SlidingMode::computeTauR(double current_time) {
 
 	// compute tau1 (discontinuous component of tau)
 	double tauR_1 = this->m_r_*this->epsilon_yaw_*this->MathSign(this->s_yaw_);
+	// tauR_1 = 0;
 
 	ROS_WARN_STREAM("TAU_R " << tauR_0 + tauR_1);
 
@@ -381,6 +389,10 @@ double SlidingMode::computeTauR(double current_time) {
 	// LOW PASS FILTER tauR_1
 
 	return tauR_0 + tauR_1;
+	
+	// double tauR = - this->m_r_*(this->epsilon_yaw_*this->MathSign(this->s_yaw_0_) + this->lambda_yaw_*this->d_yaw_error_ - this->dd_yaw_ref_) 
+	// 							- this->m_uv_*this->state_.v1[0]*this->state_.v1[1] + this->d_r_*this->state_.v2[2];
+	// return tauR;
 }
 
 double SlidingMode::MathSign(double value) {
