@@ -40,7 +40,7 @@ static_thruster_allocation:
 sliding_mode:
   # sliding surface coefficients for yaw, surge integral and sway integral control
   lambda:
-    yaw: 0.3 # 0.3
+    yaw: 1.7 # 2 1 0.3
     surge: 0.3
     sway: 0.3
   epsilon:
@@ -48,7 +48,7 @@ sliding_mode:
     surge: 0.02
     sway: 0.02
   k_c:
-    yaw: 15 # 15
+    yaw: 6 # 7 15
     surge: 15
     sway: 15
   mu:

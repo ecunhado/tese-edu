@@ -202,7 +202,7 @@ void SlidingMode::updateIntegralsAndDerivatives() {
     // derivative of yaw REFERENCE
     this->d_yaw_ref_ = (this->yaw_ref_ - this->last_yaw_ref_)/(current_time - this->last_timestamp_).toSec();
 		// prevent large spikes in the derivative of yaw REFERENCE
-		// this->d_yaw_ref_ = (abs(this->d_yaw_ref_) > 10*abs(this->last_d_yaw_ref_)) ? this->last_d_yaw_ref_ : this->d_yaw_ref_;
+		this->d_yaw_ref_ = (abs(this->d_yaw_ref_) > 10*abs(this->last_d_yaw_ref_)) ? this->last_d_yaw_ref_ : this->d_yaw_ref_;
 
 		// if after second iteration
 		if (this->update_iteration_ > 1) {
