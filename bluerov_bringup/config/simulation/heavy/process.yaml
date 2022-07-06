@@ -45,7 +45,7 @@ processes:
          - path_following:= true
          - dsor_paths:= true
          - auvstate2mstate:= true
-         - vehicle_stabilizer:= false
+         - vehicle_stabilizer:= true
     dependencies:
          []
   - name: 'sliding_mode'

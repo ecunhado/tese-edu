@@ -3,7 +3,7 @@ vehicle_stabilizer:
   # By default we have configured ros.yaml for: surge, sway, heave, roll, pitch, yaw, roll_rate, pitch_rate, yaw_rate, depth, altitude
   # But more can be provided, as long as the corresponding topic name is provided in the ros.yaml
   # If you want to publish no reference, this dictionary should be left empty!
-  references: {'depth': 0.0, 'pitch': 0.0}
+  references: {'depth': 0.0} #, 'pitch': 0.0}
 
 open_loop_controller:
   gain_Fx: 10.0 # surge speed to -> Force Fx N
@@ -41,15 +41,15 @@ sliding_mode:
   # sliding surface coefficients for yaw, surge integral and sway integral control
   lambda:
     yaw: 1.7 # 2 1 0.3
-    surge: 0.3
+    surge: 0.1 # 0.3
     sway: 0.3
   epsilon:
-    yaw: 0.3 # 0.3
+    yaw: 0.01 # 0.01 0.3
     surge: 0.02
     sway: 0.02
   k_c:
-    yaw: 6 # 7 15
-    surge: 15
+    yaw: 2 # 6 7 15
+    surge: 0.6 # 15
     sway: 15
   mu:
     yaw: 0.8 # seconds

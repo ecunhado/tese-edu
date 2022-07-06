@@ -193,7 +193,7 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
   msg.disable_axis = {0, 0, 0, 0, 0, 0};
   
   // publish body forces and torques
-  // ROS_INFO_STREAM("TAU_U: " << tau.u);
+  ROS_INFO_STREAM("TAU_U: " << tau.u);
   // ROS_INFO_STREAM("TAU_V: " << tau.v);
   // ROS_INFO_STREAM("TAU_R: " << tau.r);
   this->forces_torques_pub_.publish(msg);
