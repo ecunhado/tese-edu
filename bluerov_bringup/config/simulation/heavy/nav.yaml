@@ -50,13 +50,13 @@ filter:
             -   frame_id:   "bluerov_dvl_bt"
                 config:     "Hvelocity"            # [vx, vy]
                 noise:      [0.0225, 0.0225]
-                outlier_tolerance: 0.2
-                reject_counter: 200
+                outlier_tolerance: 0.5
+                reject_counter: 10
             -   frame_id:   "bluerov_dvl_wt"
                 config:     "Hvelocity"            # [vx, vy]
                 noise:      [0.0225, 0.0225]
-                outlier_tolerance: 0.2
-                reject_counter: 200
+                outlier_tolerance: 0.5
+                reject_counter: 10
             -   frame_id:   "bluerov_depth" 
                 config:     "Vposition"            # [z]
                 noise:      [0.1]
