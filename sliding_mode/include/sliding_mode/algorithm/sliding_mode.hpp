@@ -2,6 +2,7 @@
 
 #include <ros/ros.h>
 #include <dsor_utils/control/vehicle_state.hpp>
+#include <dsor_utils/filters/lowpass_filter.hpp>
 #include <auv_msgs/NavigationStatus.h>
 #include "sliding_mode/DebugSlidingMode.h"
 
@@ -20,7 +21,8 @@ class SlidingMode {
                     double Iz, double m,
                     double Xu, double Xdu, double Xuu,
                     double Yv, double Ydv, double Yvv,
-                    double Nr, double Ndr, double Nrr);
+                    double Nr, double Ndr, double Nrr,
+                    double node_frequency);
         ~SlidingMode();
 
         void updateVehicleState(const auv_msgs::NavigationStatus &msg);
@@ -51,7 +53,25 @@ class SlidingMode {
          * @brief Vehicle state attribute 
          */
         DSOR::VehicleState state_;
+
+        /**
+         * @brief Low Pass Filter for discontinuous part of
+         *        surge control law 
+         */
+        std::unique_ptr<LowPassFilter> lpf_U_;
         
+        /**
+         * @brief Low Pass Filter for discontinuous part of
+         *        sway control law 
+         */
+        std::unique_ptr<LowPassFilter> lpf_V_; 
+        
+        /**
+         * @brief Low Pass Filter for discontinuous part of
+         *        yaw control law 
+         */
+        std::unique_ptr<LowPassFilter> lpf_R_;
+
         /**
          * @brief Yaw Reference.
          */
@@ -381,4 +401,7 @@ class SlidingMode {
          * @brief Dynamic equations' coefficient.
          */
         double d_r_;
+
+        // double tauR0;
+        // double tauR1;
 };

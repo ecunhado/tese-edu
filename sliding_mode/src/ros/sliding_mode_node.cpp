@@ -71,7 +71,8 @@ SlidingModeNode::SlidingModeNode(ros::NodeHandle *nh, ros::NodeHandle *nh_p)
   double Nrr = MedusaGimmicks::getParameters<double>(
             this->nh_p_, "bluerov/Nrr");
 
-  // ROS_WARN_STREAM(this->lambda_yaw_);
+  double node_frequency = MedusaGimmicks::getParameters<double>(
+            this->nh_p_, "node_frequency");
 
   // create SlidingMode object
   this->sm_controller_ = std::make_unique<SlidingMode>(lambda_yaw, lambda_surge, lambda_sway,
@@ -81,7 +82,8 @@ SlidingModeNode::SlidingModeNode(ros::NodeHandle *nh, ros::NodeHandle *nh_p)
                                                        Iz, m,
                                                        Xu, Xdu, Xuu,
                                                        Yv, Ydv, Yvv,
-                                                       Nr, Ndr, Nrr);
+                                                       Nr, Ndr, Nrr,
+                                                       node_frequency);
 
 }
 

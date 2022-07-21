@@ -7,7 +7,8 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 												 double Iz, double m,
 												 double Xu, double Xdu, double Xuu,
 												 double Yv, double Ydv, double Yvv,
-												 double Nr, double Ndr, double Nrr) {
+												 double Nr, double Ndr, double Nrr,
+												 double node_frequency) {
 	
 	// attributes (coefficients, parameters, etc.)
 	this->lambda_yaw_ = lambda_yaw;
@@ -58,6 +59,14 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 
 	// create Vehicle State object
 	this->state_ = DSOR::VehicleState();
+
+	// create low-pass filters
+	double lpf_dt;
+	lpf_dt = 1.0 / node_frequency;
+
+  this->lpf_R_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI*0.5);
+	this->lpf_U_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI/this->mu_surge_);
+	this->lpf_V_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI/this->mu_sway_);
 
 	// errors
 	this->alpha_error_ = 0;
@@ -138,6 +147,9 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 	this->s_yaw_0_ = 0;
 	this->s_yaw_0_init_ = 0;
 	this->s_yaw_ = 0;
+
+	// this->tauR0 = 0;
+	// this->tauR1 = 0;
 }
 
 SlidingMode::~SlidingMode() {
@@ -196,12 +208,8 @@ void SlidingMode::updateIntegralsAndDerivatives() {
     this->beta_ref_ += 0.5*(this->last_sway_ref_ + this->sway_ref_)*(current_time - this->last_timestamp_).toSec();
 
     // derivative of REFERENCE body velocities
-		// double d_surge_ref = this->d_surge_ref_;
     this->d_surge_ref_ = (this->surge_ref_ - this->last_surge_ref_)/(current_time - this->last_timestamp_).toSec();
-    // double d_sway_ref = this->d_sway_ref_;
 		this->d_sway_ref_ = (this->sway_ref_ - this->last_sway_ref_)/(current_time - this->last_timestamp_).toSec();
-		// prevent large spikes in the derivative of surge REFERENCE
-		// this->d_surge_ref_ = (abs(this->d_surge_ref_) > d_surge_ref)
 
     // derivative of yaw REFERENCE
     this->d_yaw_ref_ = (this->yaw_ref_ - this->last_yaw_ref_)/(current_time - this->last_timestamp_).toSec();
@@ -307,6 +315,8 @@ void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 	this->debug_msg_.s_sway = this->s_sway_;
 	this->debug_msg_.s_yaw = this->s_yaw_;
 	this->debug_msg_.s_yaw_0 = this->s_yaw_0_;
+	// this->debug_msg_.tauR0 = this->tauR0;
+	// this->debug_msg_.tauR1 = this->tauR1;
 }
 
 double SlidingMode::computeTauU(double current_time) {
@@ -326,15 +336,6 @@ double SlidingMode::computeTauU(double current_time) {
 	double tauU_0 = - this->m_v_*this->state_.v1[1]*this->state_.v2[2] + this->d_u_*this->state_.v1[0]
 									- this->m_u_*(- this->d_surge_ref_ + this->lambda_surge_*this->surge_error_
 																+ this->k_c_surge_*this->s_surge_0_);
-
-	// ROS_WARN_STREAM("\n1 " << - this->m_v_*this->state_.v1[1]*this->state_.v2[2] << "\n" <<
-	// 								"2 " << this->d_u_*this->state_.v1[0] << "\n" <<
-	// 								"3 " << - this->m_u_*(- this->d_surge_ref_ + this->lambda_surge_*this->surge_error_
-	// 																			+ this->k_c_surge_*this->s_surge_0_) << "\n");
-
-	// ROS_WARN_STREAM("\n3.1 " << - this->d_surge_ref_ << "\n" <<
-	// 								"3.2 " << this->lambda_surge_*this->surge_error_ << "\n" <<
-	// 								"3.3 " << this->k_c_surge_*this->s_surge_0_ << "\n");
 
 	// compute tau1 (discontinuous component of tau)
 	double tauU_1 = this->m_u_*this->epsilon_surge_*this->MathSign(this->s_surge_);
@@ -394,28 +395,22 @@ double SlidingMode::computeTauR(double current_time) {
 									- this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
 																+ this->k_c_yaw_*this->s_yaw_0_);
 
-	// ROS_WARN_STREAM("\n1 " << - this->m_uv_*this->state_.v1[0]*this->state_.v1[1] << "\n" <<
-	// 								"2 " << this->d_r_*this->state_.v2[2] << "\n" <<
-	// 								"3 " << - this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
-	// 																			+ this->k_c_yaw_*this->s_yaw_0_) << "\n");
-
-	// ROS_WARN_STREAM("\n3.1 " << - this->dd_yaw_ref_ << "\n" <<
-	// 								"3.2 " << this->lambda_yaw_*this->d_yaw_error_ << "\n" <<
-	// 								"3.3 " << this->k_c_yaw_*this->s_yaw_0_ << "\n");
-
 	// compute tau1 (discontinuous component of tau)
 	double tauR_1 = this->m_r_*this->epsilon_yaw_*this->MathSign(this->s_yaw_);
 
+	// ROS_INFO_STREAM("pre-filter: " << tauR_1);
+
+	// LOW PASS FILTER tauR_1
+	tauR_1 = this->lpf_R_->update(tauR_1);
+	
+	// ROS_INFO_STREAM("post-filter: " << tauR_1);
+
 	ROS_WARN_STREAM("TAU_R " << tauR_0 + tauR_1);
 
-	// NOT IMPLEMENTED YET
-	// LOW PASS FILTER tauR_1
-
-	return tauR_0 + tauR_1;
+	// this->tauR0 = tauR_0;
+	// this->tauR1 = tauR_1;
 	
-	// double tauR = - this->m_r_*(this->epsilon_yaw_*this->MathSign(this->s_yaw_0_) + this->lambda_yaw_*this->d_yaw_error_ - this->dd_yaw_ref_) 
-	// 							- this->m_uv_*this->state_.v1[0]*this->state_.v1[1] + this->d_r_*this->state_.v2[2];
-	// return tauR;
+	return tauR_0 + tauR_1;
 }
 
 double SlidingMode::MathSign(double value) {
@@ -431,6 +426,8 @@ double SlidingMode::RadiansToDegrees(double value) {
 }
 
 void SlidingMode::setYawRef(double value) {
+	// from [-180 180] to [0 2PI]
+	value = (value < 0) ? value + 360 : value;
   this->yaw_ref_ = this->DegreesToRadians(value);
 }
 

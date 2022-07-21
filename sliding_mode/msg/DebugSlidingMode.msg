@@ -12,3 +12,5 @@ float64 s_surge
 float64 s_sway
 float64 s_yaw
 float64 s_yaw_0
+float64 tauR0
+float64 tauR1
