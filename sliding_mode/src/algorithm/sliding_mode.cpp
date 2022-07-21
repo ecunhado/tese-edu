@@ -64,7 +64,7 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 	double lpf_dt;
 	lpf_dt = 1.0 / node_frequency;
 
-  this->lpf_R_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI*0.5);
+  this->lpf_R_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI/this->mu_yaw_); // *0.5
 	this->lpf_U_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI/this->mu_surge_);
 	this->lpf_V_ = std::make_unique<LowPassFilter>(lpf_dt, 2*M_PI/this->mu_sway_);
 
@@ -148,8 +148,12 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 	this->s_yaw_0_init_ = 0;
 	this->s_yaw_ = 0;
 
-	// this->tauR0 = 0;
-	// this->tauR1 = 0;
+	this->tauR_1_bf = 0;
+	this->tauR_1_af = 0;
+	this->tauU_1_bf = 0;
+	this->tauU_1_af = 0;
+	this->tauV_1_bf = 0;
+	this->tauV_1_af = 0;
 }
 
 SlidingMode::~SlidingMode() {
@@ -315,8 +319,12 @@ void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 	this->debug_msg_.s_sway = this->s_sway_;
 	this->debug_msg_.s_yaw = this->s_yaw_;
 	this->debug_msg_.s_yaw_0 = this->s_yaw_0_;
-	// this->debug_msg_.tauR0 = this->tauR0;
-	// this->debug_msg_.tauR1 = this->tauR1;
+	this->debug_msg_.tauR_1_bf = this->tauR_1_bf;
+	this->debug_msg_.tauR_1_af = this->tauR_1_af;
+	this->debug_msg_.tauU_1_bf = this->tauU_1_bf;
+	this->debug_msg_.tauU_1_af = this->tauU_1_af;
+	this->debug_msg_.tauV_1_bf = this->tauV_1_bf;
+	this->debug_msg_.tauV_1_af = this->tauV_1_af;
 }
 
 double SlidingMode::computeTauU(double current_time) {
@@ -340,10 +348,16 @@ double SlidingMode::computeTauU(double current_time) {
 	// compute tau1 (discontinuous component of tau)
 	double tauU_1 = this->m_u_*this->epsilon_surge_*this->MathSign(this->s_surge_);
 
-	ROS_WARN_STREAM("TAU_U " << tauU_0 + tauU_1);
+	// tau1 value before filter
+	this->tauU_1_bf = tauU_1;
 
-	// NOT IMPLEMENTED YET
 	// LOW PASS FILTER tauU_1
+	tauU_1 = this->lpf_U_->update(tauU_1);
+	
+	// tau1 value after filter
+	this->tauU_1_af = tauU_1;
+
+	ROS_WARN_STREAM("TAU_U " << tauU_0 + tauU_1);
 
 	return tauU_0 + tauU_1;
 }
@@ -369,10 +383,16 @@ double SlidingMode::computeTauV(double current_time) {
 	// compute tau1 (discontinuous component of tau)
 	double tauV_1 = this->m_v_*this->epsilon_sway_*this->MathSign(this->s_sway_);
 
-	ROS_WARN_STREAM("TAU_V " << tauV_0 + tauV_1);
+	// tau1 value before filter
+	this->tauV_1_bf = tauV_1;
 
-	// NOT IMPLEMENTED YET
 	// LOW PASS FILTER tauV_1
+	tauV_1 = this->lpf_V_->update(tauV_1);
+	
+	// tau1 value after filter
+	this->tauV_1_af = tauV_1;
+
+	ROS_WARN_STREAM("TAU_V " << tauV_0 + tauV_1);
 
 	return tauV_0 + tauV_1;
 }
@@ -398,17 +418,16 @@ double SlidingMode::computeTauR(double current_time) {
 	// compute tau1 (discontinuous component of tau)
 	double tauR_1 = this->m_r_*this->epsilon_yaw_*this->MathSign(this->s_yaw_);
 
-	// ROS_INFO_STREAM("pre-filter: " << tauR_1);
+	// tau1 value before filter
+	this->tauR_1_bf = tauR_1;
 
 	// LOW PASS FILTER tauR_1
 	tauR_1 = this->lpf_R_->update(tauR_1);
 	
-	// ROS_INFO_STREAM("post-filter: " << tauR_1);
+	// tau1 value after filter
+	this->tauR_1_af = tauR_1;
 
 	ROS_WARN_STREAM("TAU_R " << tauR_0 + tauR_1);
-
-	// this->tauR0 = tauR_0;
-	// this->tauR1 = tauR_1;
 	
 	return tauR_0 + tauR_1;
 }

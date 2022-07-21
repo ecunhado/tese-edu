@@ -52,7 +52,7 @@ sliding_mode:
     surge: 0.8 # 0.1 15
     sway: 0.4 # 15
   mu:
-    yaw: 0.8 # seconds
+    yaw: 0.2 # seconds
     surge: 0.2 # seconds
     sway: 0.2 # seconds
   # antiwindup:

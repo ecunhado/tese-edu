@@ -402,6 +402,10 @@ class SlidingMode {
          */
         double d_r_;
 
-        // double tauR0;
-        // double tauR1;
+        double tauR_1_bf = 0;
+        double tauR_1_af = 0;
+        double tauU_1_bf = 0;
+        double tauU_1_af = 0;
+        double tauV_1_bf = 0;
+        double tauV_1_af = 0;
 };
