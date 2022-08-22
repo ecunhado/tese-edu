@@ -195,9 +195,6 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
   msg.disable_axis = {0, 0, 0, 0, 0, 0};
   
   // publish body forces and torques
-  // ROS_INFO_STREAM("TAU_U: " << tau.u);
-  // ROS_INFO_STREAM("TAU_V: " << tau.v);
-  // ROS_INFO_STREAM("TAU_R: " << tau.r);
   this->forces_torques_pub_.publish(msg);
 
   // publish debug message
@@ -208,9 +205,6 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
  * @brief  Auxiliar method to stop the algorithm
  */
 void SlidingModeNode::stateCallback(const auv_msgs::NavigationStatus &msg) {
-
-  // ROS_INFO_STREAM("State X: " << msg.position.north);
-
   // update state
   this->sm_controller_->updateVehicleState(msg);
   
