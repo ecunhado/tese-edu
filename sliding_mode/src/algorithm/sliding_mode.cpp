@@ -154,6 +154,10 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 	this->tauU_1_af = 0;
 	this->tauV_1_bf = 0;
 	this->tauV_1_af = 0;
+
+	this->started_control_yaw_ = false;
+	this->started_control_surge_ = false;
+	this->started_control_sway_ = true; // false if path following publishes sway references
 }
 
 SlidingMode::~SlidingMode() {
@@ -264,13 +268,13 @@ Tau SlidingMode::computeForcesTorques() {
 	// create Tau instance
 	struct Tau tau;
 
-	tau.u = this->computeTauU(current_time);
+	tau.u = this->started_control_surge_ ? this->computeTauU(current_time) : 0;
 	// tau.u = 0;
 	
-	tau.v = this->computeTauV(current_time);
+	tau.v = this->started_control_sway_ ? this->computeTauV(current_time) : 0;
 	// tau.v = 0;
 
-	tau.r = this->computeTauR(current_time);
+	tau.r = this->started_control_yaw_ ? this->computeTauR(current_time) : 0;
 	// tau.r = 0;
 
 	this->buildDebugMessage(tau.u, tau.v, tau.r);
@@ -460,4 +464,16 @@ void SlidingMode::setSwayRef(double value) {
 
 sliding_mode::DebugSlidingMode SlidingMode::getDebugMsg() {
 	return this->debug_msg_;
+}
+
+void SlidingMode::startControlSurge() {
+	this->started_control_surge_ = true;
+}
+
+void SlidingMode::startControlSway() {
+	this->started_control_sway_ = true;
+}
+
+void SlidingMode::startControlYaw() {
+	this->started_control_yaw_ = true;
 }

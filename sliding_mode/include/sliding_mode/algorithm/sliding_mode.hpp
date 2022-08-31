@@ -38,6 +38,9 @@ class SlidingMode {
         void setYawRef(double value);
         void setSurgeRef(double value);
         void setSwayRef(double value);
+        void startControlSurge();
+        void startControlSway();
+        void startControlYaw();
 
     private:
         double MathSign(double value);
@@ -408,4 +411,19 @@ class SlidingMode {
         double tauU_1_af = 0;
         double tauV_1_bf = 0;
         double tauV_1_af = 0;
+
+        /**
+         * @brief Started control of surge.
+         */
+        bool started_control_surge_;
+
+        /**
+         * @brief Started control of sway.
+         */
+        bool started_control_sway_;
+
+        /**
+         * @brief Started control of yaw.
+         */
+        bool started_control_yaw_;
 };
