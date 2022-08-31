@@ -222,21 +222,18 @@ void SlidingModeNode::stateCallback(const auv_msgs::NavigationStatus &msg) {
 }
 
 void SlidingModeNode::yawCallback(const std_msgs::Float64 &msg) {
-  ROS_WARN_STREAM("updating yaw");
   this->sm_controller_->startControlYaw();
   this->sm_controller_->setYawRef(msg.data);
   this->got_yaw_ref_ = true;
 }
 
 void SlidingModeNode::surgeCallback(const std_msgs::Float64 &msg) {
-  ROS_WARN_STREAM("updating surge");
   this->sm_controller_->startControlSurge();
   this->sm_controller_->setSurgeRef(msg.data);
   this->got_surge_ref_ = true;
 }
 
 void SlidingModeNode::swayCallback(const std_msgs::Float64 &msg) {
-  ROS_WARN_STREAM("updating sway");
   this->sm_controller_->startControlSway();
   this->sm_controller_->setSwayRef(msg.data);
   this->got_sway_ref_ = true;

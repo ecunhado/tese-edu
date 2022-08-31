@@ -269,13 +269,8 @@ Tau SlidingMode::computeForcesTorques() {
 	struct Tau tau;
 
 	tau.u = this->started_control_surge_ ? this->computeTauU(current_time) : 0;
-	// tau.u = 0;
-	
 	tau.v = this->started_control_sway_ ? this->computeTauV(current_time) : 0;
-	// tau.v = 0;
-
 	tau.r = this->started_control_yaw_ ? this->computeTauR(current_time) : 0;
-	// tau.r = 0;
 
 	this->buildDebugMessage(tau.u, tau.v, tau.r);
 
@@ -361,8 +356,6 @@ double SlidingMode::computeTauU(double current_time) {
 	// tau1 value after filter
 	this->tauU_1_af = tauU_1;
 
-	ROS_WARN_STREAM("TAU_U " << tauU_0 + tauU_1);
-
 	return tauU_0 + tauU_1;
 }
 
@@ -396,8 +389,6 @@ double SlidingMode::computeTauV(double current_time) {
 	// tau1 value after filter
 	this->tauV_1_af = tauV_1;
 
-	ROS_WARN_STREAM("TAU_V " << tauV_0 + tauV_1);
-
 	return tauV_0 + tauV_1;
 }
 
@@ -430,8 +421,6 @@ double SlidingMode::computeTauR(double current_time) {
 	
 	// tau1 value after filter
 	this->tauR_1_af = tauR_1;
-
-	ROS_WARN_STREAM("TAU_R " << tauR_0 + tauR_1);
 	
 	return tauR_0 + tauR_1;
 }
