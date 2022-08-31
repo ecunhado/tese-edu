@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>serial_lib</name>
+  <version>1.0.0</version>
+  <description>The serial_lib package</description>
+
+  <maintainer email="jorgeribeiro@ist.utl.pt">Jorge Ribeiro</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <run_depend>roscpp</run_depend>
+
+</package>

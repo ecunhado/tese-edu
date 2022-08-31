@@ -28,7 +28,7 @@ filter:
         # If a frame_id is given ("gnss") the initial position of the filter comes from the sensor.
         # Filter won't work without a initial position
         manually_initialization:
-            frame_id: "bluerov_gnss" # bluerov_gnss
+            frame_id: "" # bluerov_gnss
             # frame_id: "" # bluerov_gnss
             value: [4290794.432828665, 491936.5610790758, -0.1,    # Position - x, y, z
                     0.0, 0, 0,      # Velocity - dx, dy, dz

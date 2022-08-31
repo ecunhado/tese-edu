@@ -1,0 +1,19 @@
+node_frequency: 2.0
+port: /dev/hrov/imu
+baudrate: 115200
+use_position: true
+frame_id: ahrs
+topics:
+    subscribers:
+        conf: conf
+        tare: tare
+    publishers:
+        meas_filter: /measurement/orientation
+        data: data
+        raw: raw
+        mag: imu_pp
+        diagnostics: /diagnostics
+
+
+
+

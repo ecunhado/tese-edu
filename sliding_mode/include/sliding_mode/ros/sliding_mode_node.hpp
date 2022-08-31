@@ -63,6 +63,20 @@ class SlidingModeNode {
      */
     sliding_mode::DebugSlidingMode debug_msg_;
 
+    /**
+     * @brief True if a reference for yaw was received in this iteration
+     */
+    bool got_yaw_ref_;
+
+    /**
+     * @brief True if a reference for surge was received in this iteration
+     */
+    bool got_surge_ref_;
+
+    /**
+     * @brief True if a reference for sway was received in this iteration
+     */
+    bool got_sway_ref_;
     
     /** SUBSCRIBERS **/
 

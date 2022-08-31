@@ -1,0 +1,27 @@
+# Delfim calibration
+
+config_commands: [
+"VNWRG,06,0", # Stop Asynch 
+"VNRFS", #  Restore factory resets  
+"VNWRG,06,0", #  Stop Asynch (default msg is YMR reg6_14, 40 Hz)  
+"VNWRG,35,0,0,0,0", #  VPE Disabled  
+"VNWRG,36,5,5,5,0,0,0,0,0,0", #  trust (5) in mags and no adaptive tuning or filtering (IF VPE Off, is irrelevant.)  
+"VNWRG,44,0,1,5", #  Turn OFF real-time mag calibration algorithm and output compensation)  
+"VNWRG,26,1,0,0,0,1,0,0,0,1", #  Reference Frame (Sensor to Body)  
+"VNWRG,83,1,1,0,0,1000,2016.1,+43.933115,+15.444187,+100.000", #  Use Mag and Grav Models for Lisbon  
+#  "VNWRG,23,1,0,0,0,1,0,0,0,1,0.0051,-0.0500,-0.0104",    #  Calibration made on 20150510  
+"VNWNV", #  Write settings to  memory  
+"VNRST", #  Reset the Kalman Filter  
+]
+
+check_commands: [
+"VNWRG,07,10", #  Asynch data output rate 10 [Hz]  
+"VNWRG,06,14", #  (reg6_14) YMR, Magnet, Accel [m/s^2], Gyros [rad/s]  
+"VNRRG,21", #  Read Mag and Grav model vectors  
+"VNRRG,23", #  Read Calibration mode  
+"VNRRG,26", #  Install matrix  
+"VNRRG,35", #  VPE Basic Control  
+"VNRRG,36", #  Basic Magnetometers Configuration  
+"VNRRG,37", #  Advanced Magnetometers Configuration  
+"VNRRG,83", #  Read Mag and Grav model cfg and position/date  
+]

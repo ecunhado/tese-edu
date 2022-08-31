@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="2">
+    
+    <name>vn100_imu</name>
+    <version>1.0.0</version>
+    <description>IMU driver for medusas</description>
+
+    <license>MIT</license>
+
+    <author email="jquintas@gmail.com">Joao Quintas</author>
+    <maintainer email="marcelo.jacinto@tecnico.ulisboa.pt">Marcelo Jacinto</maintainer>
+    <maintainer email="david.souto@tecnico.ulisboa.pt">David Souto</maintainer>
+    <maintainer email="andre.potes@tecnico.ulisboa.pt">Andre Potes</maintainer>
+    <maintainer email="jquintas@gmail.com">Joao Quintas</maintainer>
+    <maintainer email="jcruz.pedro.cruz@tecnico.ulisboa.pt">Joao Cruz</maintainer>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <depend>dsor_msgs</depend>
+    <depend>medusa_msgs</depend>
+    <depend>sensor_msgs</depend>
+    <depend>nmea_msgs</depend>
+    <depend>geometry_msgs</depend>
+    <depend>tf</depend>
+    <depend>roscpp</depend>
+    <depend>serial_port</depend>
+    <depend>serial_lib</depend>
+
+    <build_depend>message_generation</build_depend>
+    <depend>medusa_gimmicks_library</depend>
+    <depend>medusa_diagnostics_library</depend>
+    <depend>nav_msgs</depend>
+    <exec_depend>message_runtime</exec_depend>
+
+</package>

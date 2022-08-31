@@ -1,0 +1,7 @@
+PARAMETERS,type,purpose,SUBSCRIBERS,type,purpose,PUBLISHERS,type,purpose,SERVICES,type,purpose
+BAUDRATE,115200,Serial port config,/imu/conf,std_msgs::String,Configure device,/imu/odom,nav_msgs/Odometry,Data for EKF,/imu/set_logger_level,None,None
+node_frequency,2.0,Node rate,/imu/tare,std_msgs::String,Reset attitude cmd,/rosout,rosgraph_msgs/Log,Logging,/imu/get_loggers,None,None
+Check_Commands,"['VNWRG,07,10',..]",Read commands,,,,/imu/data,medusa_msgs/mIMU, Processed sensor data,,,
+use_position,False,None,,,,/diagnostics,diagnostic_msgs/DiagnosticArray,Diagnostics,,,
+Config_Commands,"['VNWRG,06,0',...]",Configure device,,,,/imu/imu_pp,vn100_imu/imu_pp,Magnetometer values,,,
+PORT,/dev/medusa/imu,Serial port config,,,,/imu/raw,nmea_msgs/Sentence,Raw sensor data,,,

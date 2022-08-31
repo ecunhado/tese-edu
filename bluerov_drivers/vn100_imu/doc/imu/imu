@@ -1,0 +1,21 @@
+digraph ros_node_template {
+	label="Ros Node Relation Diagram for node /imu
+
+" labelloc=t
+	fontsize=16
+	node [shape=oval]
+	name [label="/imu"]
+	node [shape=rect]
+	PARAMETERSnode [label=<<TABLE CELLSPACING="0" BORDER="0" ALIGN="CENTER"><TR><TD colspan="3"><B>PARAMETERS</B></TD></TR><TR><TD SIDES="BR" BORDER="1"><B>Name</B></TD><TD SIDES="LBR" BORDER="1"><B>Data Type</B></TD><TD SIDES="LB" BORDER="1"><B>Purpose</B></TD></TR><TR><TD SIDES="BR" BORDER="1">BAUDRATE</TD><TD SIDES="BR" BORDER="1">115200</TD><TD SIDES="B" BORDER="1">Serial port config</TD></TR><TR><TD SIDES="BR" BORDER="1">node_frequency</TD><TD SIDES="BR" BORDER="1">2.0</TD><TD SIDES="B" BORDER="1">Node rate</TD></TR><TR><TD SIDES="BR" BORDER="1">Check_Commands</TD><TD SIDES="BR" BORDER="1">['VNWRG,07,10',..]</TD><TD SIDES="B" BORDER="1">Read commands</TD></TR><TR><TD SIDES="BR" BORDER="1">use_position</TD><TD SIDES="BR" BORDER="1">False</TD><TD SIDES="B" BORDER="1">None</TD></TR><TR><TD SIDES="BR" BORDER="1">Config_Commands</TD><TD SIDES="BR" BORDER="1">['VNWRG,06,0',...]</TD><TD SIDES="B" BORDER="1">Configure device</TD></TR><TR><TD SIDES="BR" BORDER="1">PORT</TD><TD SIDES="BR" BORDER="1">/dev/medusa/imu</TD><TD SIDES="B" BORDER="1">Serial port config</TD></TR></TABLE>>]
+	PARAMETERSnode -> name
+	node [shape=rect]
+	SUBSCRIBERSnode [label=<<TABLE CELLSPACING="0" BORDER="0" ALIGN="CENTER"><TR><TD colspan="3"><B>SUBSCRIBERS</B></TD></TR><TR><TD SIDES="BR" BORDER="1"><B>Name</B></TD><TD SIDES="LBR" BORDER="1"><B>Data Type</B></TD><TD SIDES="LB" BORDER="1"><B>Purpose</B></TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/conf</TD><TD SIDES="BR" BORDER="1">std_msgs::String</TD><TD SIDES="B" BORDER="1">Configure device</TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/tare</TD><TD SIDES="BR" BORDER="1">std_msgs::String</TD><TD SIDES="B" BORDER="1">Reset attitude cmd</TD></TR></TABLE>>]
+	SUBSCRIBERSnode -> name
+	node [shape=rect]
+	PUBLISHERSnode [label=<<TABLE CELLSPACING="0" BORDER="0" ALIGN="CENTER"><TR><TD colspan="3"><B>PUBLISHERS</B></TD></TR><TR><TD SIDES="BR" BORDER="1"><B>Name</B></TD><TD SIDES="LBR" BORDER="1"><B>Data Type</B></TD><TD SIDES="LB" BORDER="1"><B>Purpose</B></TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/odom</TD><TD SIDES="BR" BORDER="1">nav_msgs/Odometry</TD><TD SIDES="B" BORDER="1">Data for EKF</TD></TR><TR><TD SIDES="BR" BORDER="1">/rosout</TD><TD SIDES="BR" BORDER="1">rosgraph_msgs/Log</TD><TD SIDES="B" BORDER="1">Logging</TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/data</TD><TD SIDES="BR" BORDER="1">medusa_msgs/mIMU</TD><TD SIDES="B" BORDER="1"> Processed sensor data</TD></TR><TR><TD SIDES="BR" BORDER="1">/diagnostics</TD><TD SIDES="BR" BORDER="1">diagnostic_msgs/DiagnosticArray</TD><TD SIDES="B" BORDER="1">Diagnostics</TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/imu_pp</TD><TD SIDES="BR" BORDER="1">vn100_imu/imu_pp</TD><TD SIDES="B" BORDER="1">Magnetometer values</TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/raw</TD><TD SIDES="BR" BORDER="1">nmea_msgs/Sentence</TD><TD SIDES="B" BORDER="1">Raw sensor data</TD></TR></TABLE>>]
+	name -> PUBLISHERSnode
+	node [shape=rect]
+	SERVICESnode [label=<<TABLE CELLSPACING="0" BORDER="0" ALIGN="CENTER"><TR><TD colspan="3"><B>SERVICES</B></TD></TR><TR><TD SIDES="BR" BORDER="1"><B>Name</B></TD><TD SIDES="LBR" BORDER="1"><B>Data Type</B></TD><TD SIDES="LB" BORDER="1"><B>Purpose</B></TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/set_logger_level</TD><TD SIDES="BR" BORDER="1">None</TD><TD SIDES="B" BORDER="1">None</TD></TR><TR><TD SIDES="BR" BORDER="1">/imu/get_loggers</TD><TD SIDES="BR" BORDER="1">None</TD><TD SIDES="B" BORDER="1">None</TD></TR></TABLE>>]
+	name -> SERVICESnode
+	SERVICESnode -> name
+}

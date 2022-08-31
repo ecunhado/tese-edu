@@ -15,34 +15,39 @@ SlidingModeNode::SlidingModeNode(ros::NodeHandle *nh, ros::NodeHandle *nh_p)
   /* NOTE: initializeServices is implemented inside PathFollowingServices.cpp */
   this->initializeTimer();
 
+  // got refs
+  this->got_yaw_ref_ = false;
+  this->got_surge_ref_ = false;
+  this->got_sway_ref_ = false;
+
   // get parameters
   double lambda_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "lambda/yaw");
+            this->nh_p_, "yaw/coefficients/lambda");
   double lambda_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "lambda/surge");
+            this->nh_p_, "surge/coefficients/lambda");
   double lambda_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "lambda/sway");
+            this->nh_p_, "sway/coefficients/lambda");
 
   double epsilon_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "epsilon/yaw");
+            this->nh_p_, "yaw/coefficients/epsilon");
   double epsilon_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "epsilon/surge");
+            this->nh_p_, "surge/coefficients/epsilon");
   double epsilon_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "epsilon/sway");
+            this->nh_p_, "sway/coefficients/epsilon");
 
   double k_c_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "k_c/yaw");
+            this->nh_p_, "yaw/coefficients/k_c");
   double k_c_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "k_c/surge");
+            this->nh_p_, "surge/coefficients/k_c");
   double k_c_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "k_c/sway");
+            this->nh_p_, "sway/coefficients/k_c");
 
   double mu_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "mu/yaw");
+            this->nh_p_, "yaw/coefficients/mu");
   double mu_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "mu/surge");
+            this->nh_p_, "surge/coefficients/mu");
   double mu_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "mu/sway");
+            this->nh_p_, "sway/coefficients/mu");
 
   double Iz = MedusaGimmicks::getParameters<double>(
             this->nh_p_, "bluerov/Iz");
@@ -184,13 +189,13 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
   auv_msgs::BodyForceRequest msg;
   msg.header.stamp = ros::Time::now();
   
-  msg.wrench.force.x = tau.u;
-  msg.wrench.force.y = tau.v;
+  msg.wrench.force.x = this->got_surge_ref_ ? tau.u : 0;
+  msg.wrench.force.y = this->got_sway_ref_ ? tau.v : 0;
   msg.wrench.force.z = 0.0;
 
   msg.wrench.torque.x = 0.0;
   msg.wrench.torque.y = 0.0;
-  msg.wrench.torque.z = tau.r;
+  msg.wrench.torque.z = this->got_yaw_ref_ ? tau.r : 0;
 
   msg.disable_axis = {0, 0, 0, 0, 0, 0};
   
@@ -199,6 +204,10 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
 
   // publish debug message
   this->debug_pub_.publish(this->sm_controller_->getDebugMsg());
+
+  this->got_yaw_ref_ = false;
+  this->got_surge_ref_ = false;
+  this->got_sway_ref_ = true; // false if path following sends sway references 
 }
 
 /**
@@ -215,16 +224,19 @@ void SlidingModeNode::stateCallback(const auv_msgs::NavigationStatus &msg) {
 void SlidingModeNode::yawCallback(const std_msgs::Float64 &msg) {
   ROS_WARN_STREAM("updating yaw");
   this->sm_controller_->setYawRef(msg.data);
+  this->got_yaw_ref_ = true;
 }
 
 void SlidingModeNode::surgeCallback(const std_msgs::Float64 &msg) {
   ROS_WARN_STREAM("updating surge"); 
   this->sm_controller_->setSurgeRef(msg.data);
+  this->got_surge_ref_ = true;
 }
 
 void SlidingModeNode::swayCallback(const std_msgs::Float64 &msg) {
   ROS_WARN_STREAM("updating sway");
   this->sm_controller_->setSwayRef(msg.data);
+  this->got_sway_ref_ = true;
 }
 
 /**

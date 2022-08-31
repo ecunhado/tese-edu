@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+ <!-- VN100 AHRS driver -->
+
+ <env name="ROSCONSOLE_FORMAT" value="[${severity}] [${time}]: ${node}: ${message}"/>
+ <arg name="name" default="hrov"/>
+
+ <node pkg="vn100_imu" type="vn100_imu_node" name="imu" respawn="false" output="screen">
+     <rosparam command="load" file="$(find vn100_imu)/config/config_vn100_imu_medusa.yaml"/>
+     <rosparam command="load" file="$(find vn100_imu)/config/calibrations/$(arg name).yaml"/>
+  </node>
+</launch>
