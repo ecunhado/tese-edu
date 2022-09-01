@@ -22,32 +22,32 @@ SlidingModeNode::SlidingModeNode(ros::NodeHandle *nh, ros::NodeHandle *nh_p)
 
   // get parameters
   double lambda_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "yaw/coefficients/lambda");
+            this->nh_p_, "controllers/yaw/coefficients/lambda");
   double lambda_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "surge/coefficients/lambda");
+            this->nh_p_, "controllers/surge/coefficients/lambda");
   double lambda_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "sway/coefficients/lambda");
+            this->nh_p_, "controllers/sway/coefficients/lambda");
 
   double epsilon_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "yaw/coefficients/epsilon");
+            this->nh_p_, "controllers/yaw/coefficients/epsilon");
   double epsilon_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "surge/coefficients/epsilon");
+            this->nh_p_, "controllers/surge/coefficients/epsilon");
   double epsilon_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "sway/coefficients/epsilon");
+            this->nh_p_, "controllers/sway/coefficients/epsilon");
 
   double k_c_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "yaw/coefficients/k_c");
+            this->nh_p_, "controllers/yaw/coefficients/k_c");
   double k_c_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "surge/coefficients/k_c");
+            this->nh_p_, "controllers/surge/coefficients/k_c");
   double k_c_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "sway/coefficients/k_c");
+            this->nh_p_, "controllers/sway/coefficients/k_c");
 
   double mu_yaw = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "yaw/coefficients/mu");
+            this->nh_p_, "controllers/yaw/coefficients/mu");
   double mu_surge = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "surge/coefficients/mu");
+            this->nh_p_, "controllers/surge/coefficients/mu");
   double mu_sway = MedusaGimmicks::getParameters<double>(
-            this->nh_p_, "sway/coefficients/mu");
+            this->nh_p_, "controllers/sway/coefficients/mu");
 
   double Iz = MedusaGimmicks::getParameters<double>(
             this->nh_p_, "bluerov/Iz");
