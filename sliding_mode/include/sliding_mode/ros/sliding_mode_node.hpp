@@ -99,6 +99,16 @@ class SlidingModeNode {
      * @brief ROS state subscriber 
      */
     ros::Subscriber sway_sub_;
+
+    /**
+     * @brief ROS gamma subscriber 
+     */
+    ros::Subscriber gamma_sub_;
+
+    /**
+     * @brief ROS vehicle flag subscriber 
+     */
+    ros::Subscriber flag_sub_;
     
     
     /** PUBLISHERS **/
@@ -141,5 +151,9 @@ class SlidingModeNode {
     void surgeCallback(const std_msgs::Float64 &msg);
 
     void swayCallback(const std_msgs::Float64 &msg);
+
+    void gammaCallback(const std_msgs::Float64 &msg);
+
+    void flagCallback(const std_msgs::Int8 &msg);
 
 };

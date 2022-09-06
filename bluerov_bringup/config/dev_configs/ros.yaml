@@ -6,6 +6,8 @@ sliding_mode:
       yaw: "ref/yaw"
       surge: "ref/surge"
       sway: "ref/sway"
+      gamma: "Gamma"
+      Flag: "Flag"
     publishers:
       forces_torques: "force_bypass"
       debug: "debug"

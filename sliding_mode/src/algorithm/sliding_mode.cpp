@@ -57,6 +57,13 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 	this->surge_ref_ = 0;
 	this->sway_ref_ = 0;
 
+	// path gamma
+	this->gamma_ = -1; // if gamma is -1, no path following is being done
+	this->last_gamma_ = -1;
+
+	// vehicle flag
+	this->vehicle_flag_ = -1; // unknown
+
 	// create Vehicle State object
 	this->state_ = DSOR::VehicleState();
 
@@ -305,6 +312,9 @@ void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 
 	// update debug message
 	this->debug_msg_.header.stamp = this->last_timestamp_;
+	this->debug_msg_.yaw_ref_true = this->yaw_ref_;
+	this->debug_msg_.surge_ref_true = this->surge_ref_;
+	this->debug_msg_.sway_ref_true = this->sway_ref_;
 	this->debug_msg_.alpha_error = this->alpha_error_;
 	this->debug_msg_.beta_error = this->beta_error_;
 	this->debug_msg_.yaw_error = this->yaw_error_;
@@ -440,15 +450,55 @@ double SlidingMode::RadiansToDegrees(double value) {
 void SlidingMode::setYawRef(double value) {
 	// from [-180 180] to [0 2PI]
 	value = (value < 0) ? value + 360 : value;
-  this->yaw_ref_ = this->DegreesToRadians(value);
+
+	if (this->vehicle_flag_ != 6) { // no path following
+		this->yaw_ref_ = this->DegreesToRadians(value);
+	} else { // during path following
+		// only update reference if gamma is not switching back to a previous section of the path
+		if (floor(this->gamma_) >= floor(this->last_gamma_)) {
+			this->yaw_ref_ = this->DegreesToRadians(value);
+			this->last_gamma_ = this->gamma_;
+		}
+	}
 }
 
 void SlidingMode::setSurgeRef(double value) {
-  this->surge_ref_ = value;
+  if (this->vehicle_flag_ != 6) { // no path following
+		this->surge_ref_ = value;
+	} else { // during path following
+		// only update reference if gamma is not switching back to a previous section of the path
+		if (floor(this->gamma_) >= floor(this->last_gamma_)) {
+			this->surge_ref_ = value;
+			this->last_gamma_ = this->gamma_;
+		}
+	}
 }
 
 void SlidingMode::setSwayRef(double value) {
-  this->sway_ref_ = value;
+	if (this->vehicle_flag_ != 6) { // no path following
+		this->sway_ref_ = value;
+	} else { // during path following
+		// only update reference if gamma is not switching back to a previous section of the path
+		if (floor(this->gamma_) >= floor(this->last_gamma_)) {
+			this->sway_ref_ = value;
+			this->last_gamma_ = this->gamma_;
+		}
+	}
+}
+
+void SlidingMode::setGamma(double value) {
+  this->gamma_ = value;
+}
+
+void SlidingMode::setFlag(int value) {
+	this->vehicle_flag_ = value;
+
+	// when vehicle is not executing path following, last_gamma_ should be reset
+	if (value != 6) {
+		this->last_gamma_ = -1;
+	}
+
+	ROS_INFO_STREAM("FLAG: " << value);
 }
 
 sliding_mode::DebugSlidingMode SlidingMode::getDebugMsg() {

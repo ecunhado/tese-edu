@@ -38,6 +38,8 @@ class SlidingMode {
         void setYawRef(double value);
         void setSurgeRef(double value);
         void setSwayRef(double value);
+        void setGamma(double value);
+        void setFlag(int value);
         void startControlSurge();
         void startControlSway();
         void startControlYaw();
@@ -89,6 +91,21 @@ class SlidingMode {
          * @brief Sway Reference.
          */
         double sway_ref_;
+
+        /**
+         * @brief Gamma from the current path.
+         */
+        double gamma_;
+
+        /**
+         * @brief Last gamma from the current path.
+         */
+        double last_gamma_;
+
+        /**
+         * @brief Last gamma from the current path.
+         */
+        int vehicle_flag_;
 
         /**
          * @brief Integral of surge velocity.

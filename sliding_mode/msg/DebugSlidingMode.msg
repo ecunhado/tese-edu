@@ -1,4 +1,7 @@
 Header header
+float64 yaw_ref_true
+float64 surge_ref_true
+float64 sway_ref_true
 float64 alpha_error
 float64 beta_error
 float64 yaw_error

@@ -123,6 +123,12 @@ void SlidingModeNode::initializeSubscribers() {
   std::string sway_topic =
       MedusaGimmicks::getParameters<std::string>(this->nh_p_, "topics/subscribers/sway");
 
+  std::string gamma_topic =
+      MedusaGimmicks::getParameters<std::string>(this->nh_p_, "topics/subscribers/gamma");
+
+  std::string flag_topic =
+      MedusaGimmicks::getParameters<std::string>(this->nh_p_, "topics/subscribers/Flag");
+
   /* Initialize the subscribers */
   this->state_sub_ =
       nh_.subscribe(state_topic, 10, &SlidingModeNode::stateCallback, this);
@@ -135,6 +141,12 @@ void SlidingModeNode::initializeSubscribers() {
 
   this->sway_sub_ =
       nh_.subscribe(sway_topic, 10, &SlidingModeNode::swayCallback, this);
+
+  this->gamma_sub_ =
+      nh_.subscribe(gamma_topic, 10, &SlidingModeNode::gammaCallback, this);
+
+  this->flag_sub_ =
+      nh_.subscribe(flag_topic, 10, &SlidingModeNode::flagCallback, this);
 }
 
 /**
@@ -237,6 +249,15 @@ void SlidingModeNode::swayCallback(const std_msgs::Float64 &msg) {
   this->sm_controller_->startControlSway();
   this->sm_controller_->setSwayRef(msg.data);
   this->got_sway_ref_ = true;
+}
+
+void SlidingModeNode::gammaCallback(const std_msgs::Float64 &msg) {
+  this->sm_controller_->setGamma(msg.data);
+  ROS_WARN_STREAM("gamma: " << msg.data);
+}
+
+void SlidingModeNode::flagCallback(const std_msgs::Int8 &msg) {
+  this->sm_controller_->setFlag(msg.data);
 }
 
 /**
