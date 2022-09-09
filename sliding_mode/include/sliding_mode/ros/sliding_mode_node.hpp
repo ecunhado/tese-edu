@@ -6,6 +6,8 @@
 #include <memory>
 #include <dsor_utils/control/vehicle_state.hpp>
 
+#include "sliding_mode/ChangeSMParams.h"
+
 /* Include the messages used by publishers */
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
@@ -123,12 +125,23 @@ class SlidingModeNode {
      */
     ros::Publisher debug_pub_;
 
+    /**
+     * @brief Service to change Sliding Mode Yaw Controller parameters
+     *
+     * @param req client request
+     * @param res server response
+     * @return true
+     * @return false
+     */
+    ros::ServiceServer change_params_srv_;
+
     
     /**
      * @brief Method to initialize the ROS part
      */
     void initializeSubscribers();
     void initializePublishers();
+    void initializeServices();
     void initializeTimer();
     double nodeFrequency();
 
@@ -155,5 +168,8 @@ class SlidingModeNode {
     void gammaCallback(const std_msgs::Float64 &msg);
 
     void flagCallback(const std_msgs::Int8 &msg);
+
+    bool changeParamsService(sliding_mode::ChangeSMParams::Request &req,
+                                sliding_mode::ChangeSMParams::Response &res);
 
 };

@@ -23,6 +23,11 @@ add_message_files(
   DIRECTORY msg
 )
 
+add_service_files(
+  FILES
+  ChangeSMParams.srv
+)
+
 # Put here the message dependencies
 generate_messages(
   DEPENDENCIES

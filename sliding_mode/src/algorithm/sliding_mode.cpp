@@ -420,6 +420,15 @@ double SlidingMode::computeTauR(double current_time) {
 									- this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
 																+ this->k_c_yaw_*this->s_yaw_0_);
 
+	ROS_WARN_STREAM("1: " << - this->m_uv_*this->state_.v1[0]*this->state_.v1[1]);
+	ROS_WARN_STREAM("2: " << this->d_r_*this->state_.v2[2]);
+	ROS_WARN_STREAM("3: " << - this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
+													 + this->k_c_yaw_*this->s_yaw_0_));
+
+	ROS_WARN_STREAM("3.1: " << - this->dd_yaw_ref_);
+	ROS_WARN_STREAM("3.2: " << this->lambda_yaw_*this->d_yaw_error_);
+	ROS_WARN_STREAM("3.3: " << this->k_c_yaw_*this->s_yaw_0_);
+
 	// compute tau1 (discontinuous component of tau)
 	double tauR_1 = this->m_r_*this->epsilon_yaw_*this->MathSign(this->s_yaw_);
 
@@ -515,4 +524,44 @@ void SlidingMode::startControlSway() {
 
 void SlidingMode::startControlYaw() {
 	this->started_control_yaw_ = true;
+}
+
+std::string SlidingMode::setParams(std::string DOF, double k_c, double lambda, double epsilon) {
+	double default_value = 0.0;
+	std::string DOF_lowercase = DOF;
+	DOF_lowercase[0] = std::tolower(DOF_lowercase[0]);
+
+	// define which parameters need to be updated
+	std::map<std::string, bool> change_param;
+	change_param["k_c"] = k_c != default_value ? true : false;
+	change_param["lambda"] = lambda != default_value ? true : false;
+	change_param["epsilon"] = epsilon != default_value ? true : false;
+
+	// if no parameters need to be updated
+	if (!change_param["k_c"] && !change_param["lambda"] && !change_param["epsilon"]) {
+		return "No " + DOF_lowercase + " SM parameters were changed.";
+	}
+
+	// update parameters according to what controller (DOF) is specified
+	if (DOF == "yaw" || DOF == "Yaw") {
+		this->k_c_yaw_ = change_param["k_c"] ? k_c : this->k_c_yaw_;
+		this->lambda_yaw_ = change_param["lambda"] ? lambda : this->lambda_yaw_;
+		this->epsilon_yaw_ = change_param["epsilon"] ? epsilon : this->epsilon_yaw_;
+	} else if (DOF == "surge" || DOF == "Surge") {
+		this->k_c_surge_ = change_param["k_c"] ? k_c : this->k_c_surge_;
+		this->lambda_surge_ = change_param["lambda"] ? lambda : this->lambda_surge_;
+		this->epsilon_surge_ = change_param["epsilon"] ? epsilon : this->epsilon_surge_;
+	} else if (DOF == "sway" || DOF == "Sway") {
+		this->k_c_sway_ = change_param["k_c"] ? k_c : this->k_c_sway_;
+		this->lambda_sway_ = change_param["lambda"] ? lambda : this->lambda_sway_;
+		this->epsilon_sway_ = change_param["epsilon"] ? epsilon : this->epsilon_sway_;
+	}
+
+	// build output string message
+	std::string message = "Changed " + DOF_lowercase + " SM params to:";
+	message += change_param["k_c"] ? " k_c = " + std::to_string(k_c) : "";
+	message += change_param["lambda"] ? " lambda = " + std::to_string(lambda) : "";
+	message += change_param["epsilon"] ? " epsilon = " + std::to_string(epsilon) : "";
+
+	return message;
 }

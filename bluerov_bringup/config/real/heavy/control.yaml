@@ -38,26 +38,28 @@ static_thruster_allocation:
     # -> apply the inverse thrust curve -> Thrust in each thruster [RPM] -> Divide by the gain actuator gain -> Thrust normalized between -100 and 100
 
 sliding_mode:
-  # sliding surface coefficients for yaw, surge integral and sway integral control
-  lambda:
-    yaw: 1.7 # 1.7
-    surge: 0.3 # 0.3
-    sway: 0.3
-  epsilon:
-    yaw: 0.01 # 0.01
-    surge: 0.02
-    sway: 0.02
-  k_c: # lower for slower convergence
-    yaw: 2 # 2
-    surge: 0.8 # 0.1 15
-    sway: 0.4 # 15
-  mu:
-    yaw: 20 # seconds # 0.2
-    surge: 20 # seconds
-    sway: 20 # seconds
-  # antiwindup:
-  #   surge:
-  #   sway:
+  controllers:
+    yaw:
+      enable: true # not yet implemented
+      coefficients: # sliding surface coefficients for yaw control
+        lambda: 0.45 # 1.7 1.2 0.5 0.7 0.4 0.45
+        epsilon: 0.005 # 0.01 0.05 0.1 0.001
+        k_c: 1.2 # 2 0.2 1.5 1.3 1.2
+        mu: 20 # seconds # 0.2
+    surge:
+      enable: true # not yet implemented
+      coefficients: # sliding surface coefficients for surge integral control
+        lambda: 0.3 # 0.3
+        epsilon: 0.02
+        k_c: 0.8 # 0.1 15
+        mu: 20 # seconds
+    sway:
+      enable: true # not yet implemented
+      coefficients: # sliding surface coefficients for sway integral control
+        lambda: 0.3
+        epsilon: 0.02
+        k_c: 0.4 # 15
+        mu: 20 # seconds
 
 # bluerov vehicle parameters
   bluerov:

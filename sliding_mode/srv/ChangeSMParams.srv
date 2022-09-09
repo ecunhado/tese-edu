@@ -1,0 +1,7 @@
+string DOF
+float64 k_c
+float64 lambda
+float64 epsilon
+---
+bool success
+string message

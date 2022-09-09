@@ -43,6 +43,7 @@ class SlidingMode {
         void startControlSurge();
         void startControlSway();
         void startControlYaw();
+        std::string setParams(std::string DOF, double k_c, double lambda, double epsilon);
 
     private:
         double MathSign(double value);

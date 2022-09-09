@@ -12,7 +12,7 @@ SlidingModeNode::SlidingModeNode(ros::NodeHandle *nh, ros::NodeHandle *nh_p)
   ROS_INFO("in class constructor of SlidingModeNode");
   this->initializeSubscribers();
   this->initializePublishers();
-  /* NOTE: initializeServices is implemented inside PathFollowingServices.cpp */
+  this->initializeServices();
   this->initializeTimer();
 
   // got refs
@@ -164,6 +164,13 @@ void SlidingModeNode::initializePublishers() {
   this->debug_pub_ = nh_.advertise<sliding_mode::DebugSlidingMode>(debug_topic, 1);
 }
 
+void SlidingModeNode::initializeServices() {
+  ROS_INFO("Initializing Services for SlidingModeNode");
+
+  this->change_params_srv_ = nh_.advertiseService("/SMC/change_params",
+                        &SlidingModeNode::changeParamsService, this);
+}
+
 /**
  * @brief  Initialize the timer callback
  */
@@ -210,6 +217,10 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
   msg.wrench.torque.z = this->got_yaw_ref_ ? tau.r : 0;
 
   msg.disable_axis = {0, 0, 0, 0, 0, 0};
+
+  // ROS_WARN_STREAM("GOT REFS? " << this->got_surge_ref_ << this->got_sway_ref_ << this->got_yaw_ref_);
+  // ROS_WARN_STREAM("FORCES:" << msg.wrench.force.x << msg.wrench.force.y << msg.wrench.force.z);
+  // ROS_WARN_STREAM("TORQUES:" << msg.wrench.torque.x << msg.wrench.torque.y << msg.wrench.torque.z);
   
   // publish body forces and torques
   this->forces_torques_pub_.publish(msg);
@@ -253,11 +264,27 @@ void SlidingModeNode::swayCallback(const std_msgs::Float64 &msg) {
 
 void SlidingModeNode::gammaCallback(const std_msgs::Float64 &msg) {
   this->sm_controller_->setGamma(msg.data);
-  ROS_WARN_STREAM("gamma: " << msg.data);
+  // ROS_WARN_STREAM("gamma: " << msg.data);
 }
 
 void SlidingModeNode::flagCallback(const std_msgs::Int8 &msg) {
   this->sm_controller_->setFlag(msg.data);
+}
+
+bool SlidingModeNode::changeParamsService(sliding_mode::ChangeSMParams::Request &req,
+                                          sliding_mode::ChangeSMParams::Response &res) {
+  std::vector<std::string> controllers = {"yaw", "Yaw", "surge", "Surge", "sway", "Sway"}; 
+
+  // if req.DOF is yaw, surge or sway
+  if (std::find(std::begin(controllers), std::end(controllers), req.DOF) != std::end(controllers)) {
+    res.message = this->sm_controller_->setParams(req.DOF, req.k_c, req.lambda, req.epsilon);
+    res.success = true;
+  } else {
+    res.message = "Failed to change SM Params. DOF must be yaw, surge or sway.";
+    res.success = false;
+  }
+  
+  return true;
 }
 
 /**
