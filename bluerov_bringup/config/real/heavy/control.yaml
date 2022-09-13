@@ -3,7 +3,7 @@ vehicle_stabilizer:
   # By default we have configured ros.yaml for: surge, sway, heave, roll, pitch, yaw, roll_rate, pitch_rate, yaw_rate, depth, altitude
   # But more can be provided, as long as the corresponding topic name is provided in the ros.yaml
   # If you want to publish no reference, this dictionary should be left empty!
-  references: {'depth': 1.0, 'roll': 0.0, 'pitch': 0.0}
+  references: {'depth': 0.2}
 
 open_loop_controller:
   gain_Fx: 10.0 # surge speed to -> Force Fx N
@@ -35,16 +35,16 @@ static_thruster_allocation:
 
     # In the static thrust allocation, the pipeline is given by
     # Force and torque [N and Nm] -> allocation matrix (pseudo-inverse) -> Thrust in each thruster [N] -> Saturate each thruster force ->
-    # -> apply the inverse thrust curve -> Thrust in each thruster [RPM] -> Divide by the gain actuator gain -> Thrust normalized between -100 and 100
+    # -> apply the inverse , 'roll': 0.0, 'pitch': 0.0thrust curve -> Thrust in each thruster [RPM] -> Divide by the gain actuator gain -> Thrust normalized between -100 and 100
 
 sliding_mode:
   controllers:
     yaw:
       enable: true # not yet implemented
       coefficients: # sliding surface coefficients for yaw control
-        lambda: 0.45 # 1.7 1.2 0.5 0.7 0.4 0.45
+        lambda: 1 # 1.7 1.2 0.5 0.7 0.4 0.45 1
         epsilon: 0.005 # 0.01 0.05 0.1 0.001
-        k_c: 1.2 # 2 0.2 1.5 1.3 1.2
+        k_c: 0.5 # 2 0.2 1.5 1.3 1.2 0.5
         mu: 20 # seconds # 0.2
     surge:
       enable: true # not yet implemented

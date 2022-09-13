@@ -278,6 +278,7 @@ Tau SlidingMode::computeForcesTorques() {
 	tau.u = this->started_control_surge_ ? this->computeTauU(current_time) : 0;
 	tau.v = this->started_control_sway_ ? this->computeTauV(current_time) : 0;
 	tau.r = this->started_control_yaw_ ? this->computeTauR(current_time) : 0;
+	// tau.r = 0;
 
 	this->buildDebugMessage(tau.u, tau.v, tau.r);
 
@@ -317,7 +318,7 @@ void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 	this->debug_msg_.sway_ref_true = this->sway_ref_;
 	this->debug_msg_.alpha_error = this->alpha_error_;
 	this->debug_msg_.beta_error = this->beta_error_;
-	this->debug_msg_.yaw_error = this->yaw_error_;
+	this->debug_msg_.yaw_error = this->RadiansToDegrees(this->yaw_error_);
 	this->debug_msg_.surge_error = this->surge_error_;
 	this->debug_msg_.sway_error = this->sway_error_;
 	this->debug_msg_.d_yaw_error = this->d_yaw_error_;

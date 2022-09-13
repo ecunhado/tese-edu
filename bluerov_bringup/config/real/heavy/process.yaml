@@ -4,7 +4,7 @@ processes:
     delay_before_start: 0.0
     cmd: 'roslaunch medusa_bringup bags.launch'
     args:
-          - prefix:= sim
+          - prefix:= real # real_30_SM, real_90_SM, real_180_SM, real_dist_SM
           - onebag:= true
     dependencies:
           []
