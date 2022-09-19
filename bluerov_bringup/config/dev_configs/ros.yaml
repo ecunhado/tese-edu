@@ -175,6 +175,13 @@ static_thruster_allocation:
     publishers:
       thrusters: "/bluerov/thrusters/rpm_command"
 
+optimized_thruster_allocation:
+  topics:
+    subscribers:
+      thrust_body_request: "/bluerov/thrust_body_request"
+    publishers:
+      thrusters: "/bluerov/thrusters/rpm_command"
+
 inner_loops_pid:
   node_frequency: 10.0 
   topics:

@@ -37,6 +37,44 @@ static_thruster_allocation:
     # Force and torque [N and Nm] -> allocation matrix (pseudo-inverse) -> Thrust in each thruster [N] -> Saturate each thruster force ->
     # -> apply the inverse thrust curve -> Thrust in each thruster [RPM] -> Divide by the gain actuator gain -> Thrust normalized between -100 and 100
 
+optimized_thruster_allocation:
+  thrusters:
+    # Allocation matrix
+    # For each thruster [ Fx, Fy, Fz, lx, ly, lz ] where F = forces and l = moments arms
+    allocation_matrix: [0.707, -0.707,  0.0,  0.1355,     0.1, 0.0725,     # Thruster 1
+                        0.707,  0.707,  0.0,  0.1355,    -0.1, 0.0725,     # Thruster 2
+                       -0.707, -0.707,  0.0, -0.1475,     0.1, 0.0725,     # Thruster 3
+                       -0.707,  0.707,  0.0, -0.1475,    -0.1, 0.0725,     # Thruster 4
+                        0.000,  0.000, -1.0,  0.1200,    0.22,  0.005,     # Thruster 5
+                        0.000,  0.000, -1.0,  0.1200,   -0.22,  0.005,     # Thruster 6
+                        0.000,  0.000, -1.0, -0.1200,    0.22,  0.005,     # Thruster 7
+                        0.000,  0.000, -1.0, -0.1200,   -0.22,  0.005]     # Thruster 8
+
+    #Forces (N) = ct[0]*RPM^2 + c[1]*RPM + c[2]
+    ctf: [ 0.0000028126, 0.0, 0.0]   # parameters for bluerov (max rpm=3200), eqn -> Thrust = f(rpm)
+    ctb: [-0.0000024304, 0.0, 0.0]   # parameters for bluerov (min rpm=-3200), eqn -> Thrust = f(rpm)
+    #Maximum thrust each thruster is capable of outputting (N)
+    max_thrust_norm: 28.80
+    min_thrust_norm: -24.89
+    # RPM max value /100 -> such that the output of the thrust allocation is between (-100 and 100)
+    actuators_gain: [32.0, 32.0, 32.0, 32.0, 32.0, 32.0, 32.0, 32.0] # Inputs to actuators will be scaled to actuators_gain
+  optimization:
+    W: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
+        0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+    Q: [100.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 100.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 100.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 100.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 100.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0, 100.0]
+    beta: 1
+
 sliding_mode:
   controllers:
     yaw:
@@ -179,7 +217,7 @@ inner_loops_pid:
       #     max_out:  81.0 # N
       #     min_out: -81.0
       #     debug: true
-      # # Sway Params
+      # Sway Params
       # sway:
       #     #lpf_fc: 0.5 # low pass filter cutoff frequency
       #     kp: 15.0 #10.0

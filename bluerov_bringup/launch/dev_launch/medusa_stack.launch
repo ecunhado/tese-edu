@@ -15,6 +15,7 @@
     <arg name="filter"                        default="false" />
     <arg name="gnss2utm"                      default="false" />
     <arg name="static_thruster_allocation"    default="false" />
+    <arg name="optimized_thruster_allocation" default="false" />
     <arg name="inner_loops_pid"               default="false" />
     <arg name="open_loop_control"             default="false" />
     <arg name="waypoint"                      default="false" />
@@ -56,6 +57,10 @@
     <!-- Medusa low-level control -->
     <group if="$(arg static_thruster_allocation)">
         <node pkg="static_thruster_allocation" type="static_thruster_allocation" name="static_thruster_allocation" output="screen" />
+    </group>
+
+    <group if="$(arg optimized_thruster_allocation)">
+        <node pkg="optimized_thruster_allocation" type="optimized_thruster_allocation" name="optimized_thruster_allocation" output="screen" />
     </group>
 
     <group if="$(arg inner_loops_pid)">

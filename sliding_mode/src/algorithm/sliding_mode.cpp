@@ -278,6 +278,8 @@ Tau SlidingMode::computeForcesTorques() {
 	tau.u = this->started_control_surge_ ? this->computeTauU(current_time) : 0;
 	tau.v = this->started_control_sway_ ? this->computeTauV(current_time) : 0;
 	tau.r = this->started_control_yaw_ ? this->computeTauR(current_time) : 0;
+	// tau.u = 0;
+	// tau.v = 0;
 	// tau.r = 0;
 
 	this->buildDebugMessage(tau.u, tau.v, tau.r);
