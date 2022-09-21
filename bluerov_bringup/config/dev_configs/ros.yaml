@@ -181,6 +181,7 @@ optimized_thruster_allocation:
       thrust_body_request: "/bluerov/thrust_body_request"
     publishers:
       thrusters: "/bluerov/thrusters/rpm_command"
+      thruster_forces_norms: "/bluerov/thruster_forces_norms"
 
 inner_loops_pid:
   node_frequency: 10.0 
