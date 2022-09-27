@@ -241,14 +241,16 @@ void SlidingMode::updateIntegralsAndDerivatives() {
 
 	// Anti windup
 	// Zeros the alpha and beta errors when error is/crosses zero
-	if ((this->state_.v1[0] - this->surge_ref_)*(this->last_surge_ - this->last_surge_ref_) < 0) {
-		this->alpha_ = this->alpha_ref_;
-	}
+	if (false) {
+		if ((this->state_.v1[0] - this->surge_ref_)*(this->last_surge_ - this->last_surge_ref_) < 0) {
+			this->alpha_ = this->alpha_ref_;
+		}
 
-	if ((this->state_.v1[1] - this->sway_ref_)*(this->last_sway_ - this->last_sway_ref_) < 0) {
-		this->beta_ = this->beta_ref_;
+		if ((this->state_.v1[1] - this->sway_ref_)*(this->last_sway_ - this->last_sway_ref_) < 0) {
+			this->beta_ = this->beta_ref_;
+		}
 	}
-
+	
   // update values for next iteration
   this->last_timestamp_ = current_time;
   
@@ -262,6 +264,16 @@ void SlidingMode::updateIntegralsAndDerivatives() {
 
 	// new iteration
 	this->update_iteration_++;
+}
+
+void SlidingMode::checkResetAlphaBetaErrors(bool got_surge_ref, bool got_sway_ref) {
+	if (!got_surge_ref) {
+    this->alpha_ = this->alpha_ref_;
+  }
+
+  if (!got_sway_ref) {
+    this->beta_ = this->beta_ref_;
+  }
 }
 
 Tau SlidingMode::computeForcesTorques() {
@@ -337,6 +349,15 @@ void SlidingMode::buildDebugMessage(double tau_u, double tau_v, double tau_r) {
 	this->debug_msg_.tauU_1_af = this->tauU_1_af;
 	this->debug_msg_.tauV_1_bf = this->tauV_1_bf;
 	this->debug_msg_.tauV_1_af = this->tauV_1_af;
+	this->debug_msg_.param_yaw_eps = this->epsilon_yaw_;
+	this->debug_msg_.param_yaw_kc = this->k_c_yaw_;
+	this->debug_msg_.param_yaw_lambda = this->lambda_yaw_;
+	this->debug_msg_.param_surge_eps = this->epsilon_surge_;
+	this->debug_msg_.param_surge_kc = this->k_c_surge_;
+	this->debug_msg_.param_surge_lambda = this->lambda_surge_;
+	this->debug_msg_.param_sway_eps = this->epsilon_sway_;
+	this->debug_msg_.param_sway_kc = this->k_c_sway_;
+	this->debug_msg_.param_sway_lambda = this->lambda_sway_;
 }
 
 double SlidingMode::computeTauU(double current_time) {

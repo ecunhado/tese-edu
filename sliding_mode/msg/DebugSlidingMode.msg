@@ -21,3 +21,12 @@ float64 tauU_1_bf
 float64 tauU_1_af
 float64 tauV_1_bf
 float64 tauV_1_af
+float64 param_yaw_eps
+float64 param_yaw_kc
+float64 param_yaw_lambda
+float64 param_surge_eps
+float64 param_surge_kc
+float64 param_surge_lambda
+float64 param_sway_eps
+float64 param_sway_kc
+float64 param_sway_lambda

@@ -242,6 +242,9 @@ void SlidingModeNode::stateCallback(const auv_msgs::NavigationStatus &msg) {
   
   // update surge and sway velocities integrals
   this->sm_controller_->updateIntegralsAndDerivatives();
+
+  // zero alpha or beta errors if surge or sway references are not being published
+  this->sm_controller_->checkResetAlphaBetaErrors(this->got_surge_ref_, this->got_sway_ref_);
 }
 
 void SlidingModeNode::yawCallback(const std_msgs::Float64 &msg) {

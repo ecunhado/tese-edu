@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="waterlinked_a50_ros_driver" type="publisher.py" name="publisher">
+        <param name="ip" value="192.168.2.95"/>
+        <param name="port" value="16171"/>
+    </node>
+</launch>

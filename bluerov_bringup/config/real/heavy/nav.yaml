@@ -16,7 +16,7 @@ filter:
         outlier_rejection_threshold: 15
 
         # process noise for position, velocity, angles, angle rate, acceleration, altitude
-        process_covariance: [1.0, 0.1, 0.1, 0.1, 0.1, 0.1]   
+        process_covariance: [1.0, 1.0, 0.1, 0.1, 0.1, 0.1]   
 
         # outlier reject counters for position, velocity, angle, angle rate, acceleration, altitude  
         reject_counter:     [8, 200, 12, 4, 7, 6]              
@@ -48,14 +48,14 @@ filter:
                 noise:      [0.001, 0.001]         # if you want to use the noise directly from the sensor, fill the noise with zeros
                 outlier_tolerance: 0.2
                 reject_counter: 8
-            -   frame_id:   "bluerov_dvl_bt"
+            -   frame_id:   "dvl_bt"
                 config:     "Hvelocity"            # [vx, vy]
-                noise:      [0.0225, 0.0225]
+                noise:      [0.225, 0.225]
                 outlier_tolerance: 0.5
                 reject_counter: 10
-            -   frame_id:   "bluerov_dvl_wt"
+            -   frame_id:   "dvl_wt"
                 config:     "Hvelocity"            # [vx, vy]
-                noise:      [0.0225, 0.0225]
+                noise:      [0.225, 0.225]
                 outlier_tolerance: 0.5
                 reject_counter: 10
             -   frame_id:   "bluerov_depth" 

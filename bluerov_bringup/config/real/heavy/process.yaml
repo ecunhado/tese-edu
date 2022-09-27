@@ -43,7 +43,7 @@ processes:
          - path_following:= false
          - dsor_paths:= true
          - auvstate2mstate:= true
-         - vehicle_stabilizer:= false # CHANGED
+         - vehicle_stabilizer:= true # CHANGED
     dependencies:
          []
   - name: 'bluerov_interface'
@@ -52,7 +52,7 @@ processes:
     cmd: 'roslaunch bluerov_bringup bluerov_interface.launch'
     args:
           - bluerov_interface:= true
-          - dvl_interface:= false
+          - dvl_interface:= true
           - ahrs_interface:= false
     dependencies:
          []

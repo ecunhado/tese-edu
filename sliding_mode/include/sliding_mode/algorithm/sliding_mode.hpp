@@ -27,6 +27,7 @@ class SlidingMode {
 
         void updateVehicleState(const auv_msgs::NavigationStatus &msg);
         void updateIntegralsAndDerivatives();
+        void checkResetAlphaBetaErrors(bool got_surge_ref, bool got_sway_ref);
         Tau computeForcesTorques();
         void updateError();
         double computeYawError(double yaw, double yaw_ref);
