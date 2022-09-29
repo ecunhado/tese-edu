@@ -80,9 +80,9 @@ sliding_mode:
     yaw:
       enable: true # not yet implemented
       coefficients: # sliding surface coefficients for yaw control
-        lambda: 1.7 # 1.7
-        epsilon: 0.01 # 0.01
-        k_c: 2 # 2
+        lambda: 1.1 # 1.7
+        epsilon: 0.1 # 0.01
+        k_c: 1.8 # 2
         mu: 20 # seconds # 0.2
     surge:
       enable: true # not yet implemented
