@@ -239,16 +239,35 @@ void SlidingMode::updateIntegralsAndDerivatives() {
 			this->dd_yaw_ref_ = (this->d_yaw_ref_ - this->last_d_yaw_ref_)/(current_time - this->last_timestamp_).toSec();
 		}		
   }
-
-	// Anti windup
-	// Zeros the alpha and beta errors when error is/crosses zero
+	// Anti windup - ZEROING
+	// Zeros the alpha and beta errors when error is/crosses zero if alpha/beta errors are too large
 	if (false) {
-		if ((this->state_.v1[0] - this->surge_ref_)*(this->last_surge_ - this->last_surge_ref_) < 0) {
+		if ((this->state_.v1[0] - this->surge_ref_)*(this->last_surge_ - this->last_surge_ref_) < 0 &&
+				 abs(this->alpha_ - this->alpha_ref_) > 0.1) {
 			this->alpha_ = this->alpha_ref_;
 		}
 
-		if ((this->state_.v1[1] - this->sway_ref_)*(this->last_sway_ - this->last_sway_ref_) < 0) {
+		if ((this->state_.v1[1] - this->sway_ref_)*(this->last_sway_ - this->last_sway_ref_) < 0 &&
+				 abs(this->beta_ - this->beta_ref_) > 0.1) {
 			this->beta_ = this->beta_ref_;
+		}
+	}
+
+	// Anti windup - SATURATION
+	if (true) {
+		// alpha
+		double alpha_error = this->alpha_ - this->alpha_ref_;
+		if (alpha_error > 0.05) {
+			this->alpha_ = this->alpha_ref_ + 0.05;
+		} else if (alpha_error < -0.05) {
+			this->alpha_ = this->alpha_ref_ - 0.05;
+		}
+		// beta
+		double beta_error = this->beta_ - this->beta_ref_;
+		if (beta_error > 0.05) {
+			this->beta_ = this->beta_ref_ + 0.05;
+		} else if (beta_error < -0.05) {
+			this->beta_ = this->beta_ref_ - 0.05;
 		}
 	}
 	
@@ -413,6 +432,15 @@ double SlidingMode::computeTauV(double current_time) {
 									- this->m_v_*(- this->d_sway_ref_ + this->lambda_sway_*this->sway_error_
 																+ this->k_c_sway_*this->s_sway_0_);
 
+	// ROS_WARN_STREAM("1: " << this->m_u_*this->state_.v1[0]*this->state_.v2[2]);
+	// ROS_WARN_STREAM("2: " << this->d_v_*this->state_.v1[1]);
+	// ROS_WARN_STREAM("3: " << - this->m_v_*(- this->d_sway_ref_ + this->lambda_sway_*this->sway_error_
+	// 												 + this->k_c_sway_*this->s_sway_0_));
+
+	// ROS_WARN_STREAM("3.1: " << - this->d_sway_ref_);
+	// ROS_WARN_STREAM("3.2: " << this->lambda_sway_*this->sway_error_);
+	// ROS_WARN_STREAM("3.3: " << this->k_c_sway_*this->s_sway_0_);
+
 	// compute tau1 (discontinuous component of tau)
 	double tauV_1 = - this->m_v_*this->epsilon_sway_*this->MathSign(this->s_sway_);
 
@@ -448,14 +476,14 @@ double SlidingMode::computeTauR(double current_time) {
 
 	this->tauR_0_ = tauR_0;
 
-	ROS_WARN_STREAM("1: " << - this->m_uv_*this->state_.v1[0]*this->state_.v1[1]);
-	ROS_WARN_STREAM("2: " << this->d_r_*this->state_.v2[2]);
-	ROS_WARN_STREAM("3: " << - this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
-													 + this->k_c_yaw_*this->s_yaw_0_));
+	// ROS_WARN_STREAM("1: " << - this->m_uv_*this->state_.v1[0]*this->state_.v1[1]);
+	// ROS_WARN_STREAM("2: " << this->d_r_*this->state_.v2[2]);
+	// ROS_WARN_STREAM("3: " << - this->m_r_*(- this->dd_yaw_ref_ + this->lambda_yaw_*this->d_yaw_error_
+	// 												 + this->k_c_yaw_*this->s_yaw_0_));
 
-	ROS_WARN_STREAM("3.1: " << - this->dd_yaw_ref_);
-	ROS_WARN_STREAM("3.2: " << this->lambda_yaw_*this->d_yaw_error_);
-	ROS_WARN_STREAM("3.3: " << this->k_c_yaw_*this->s_yaw_0_);
+	// ROS_WARN_STREAM("3.1: " << - this->dd_yaw_ref_);
+	// ROS_WARN_STREAM("3.2: " << this->lambda_yaw_*this->d_yaw_error_);
+	// ROS_WARN_STREAM("3.3: " << this->k_c_yaw_*this->s_yaw_0_);
 
 	// compute tau1 (discontinuous component of tau)
 	double tauR_1 = - this->m_r_*this->epsilon_yaw_*this->MathSign(this->s_yaw_);

@@ -228,6 +228,9 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
   // publish debug message
   this->debug_pub_.publish(this->sm_controller_->getDebugMsg());
 
+  // zero alpha or beta errors if surge or sway references are not being published
+  this->sm_controller_->checkResetAlphaBetaErrors(this->got_surge_ref_, this->got_sway_ref_);
+
   this->got_yaw_ref_ = false;
   this->got_surge_ref_ = false;
   this->got_sway_ref_ = true; // false if path following sends sway references 
@@ -242,9 +245,6 @@ void SlidingModeNode::stateCallback(const auv_msgs::NavigationStatus &msg) {
   
   // update surge and sway velocities integrals
   this->sm_controller_->updateIntegralsAndDerivatives();
-
-  // zero alpha or beta errors if surge or sway references are not being published
-  this->sm_controller_->checkResetAlphaBetaErrors(this->got_surge_ref_, this->got_sway_ref_);
 }
 
 void SlidingModeNode::yawCallback(const std_msgs::Float64 &msg) {

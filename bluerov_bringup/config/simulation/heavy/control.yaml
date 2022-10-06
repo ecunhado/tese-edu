@@ -80,7 +80,7 @@ sliding_mode:
     yaw:
       enable: true # not yet implemented
       coefficients: # sliding surface coefficients for yaw control
-        lambda: 1.1 # 1.7
+        lambda: 1.2 # 1.7 1.2
         epsilon: 0.1 # 0.01
         k_c: 1.8 # 2
         mu: 20 # seconds # 0.2
@@ -96,7 +96,7 @@ sliding_mode:
       coefficients: # sliding surface coefficients for sway integral control
         lambda: 0.3
         epsilon: 0.02
-        k_c: 0.4 # 15
+        k_c: 0.8 # 15
         mu: 20 # seconds
   
   # bluerov vehicle parameters
@@ -180,7 +180,6 @@ inner_loops_pid:
       #     kp: 0.015
       #     ki: 0.0 #0.0005
       #     kd: 0.02 #0.133
-
       #     max_err:  100.0 # deg
       #     min_err: -100.0 # deg  
       #     max_out:  100.0  # N.m
@@ -206,7 +205,7 @@ inner_loops_pid:
       #     #lpf_fc: 0.5 # low pass filter cutoff frequency
       #     kp: 15.0 #10.0
       #     ki: 0.0 #1.0
-      #     kff: 40.0 #7.0
+      #     kff: 24.0 #7.0 40.0
       #     #kff_d: 0.0
       #     kff_lin_drag: 0.0 #50.0
       #     kff_quad_drag: 0.0 #50.0
@@ -217,12 +216,12 @@ inner_loops_pid:
       #     max_out:  81.0 # N
       #     min_out: -81.0
       #     debug: true
-      # Sway Params
+      # # Sway Params
       # sway:
       #     #lpf_fc: 0.5 # low pass filter cutoff frequency
-      #     kp: 15.0 #10.0
+      #     kp: 15.0 #10.0 15.0
       #     ki: 0.0 #1.0
-      #     kff: 52.0 
+      #     kff: 48.0 #52.0 48.0
       #     #kff: 15.0 #7.0
       #     #kff_d: 10.0
       #     kff_lin_drag: 0.0
