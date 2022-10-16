@@ -88,24 +88,24 @@ sliding_mode:
       enable: true # not yet implemented
       coefficients: # sliding surface coefficients for surge integral control
         lambda: 0.3 # 0.3
-        epsilon: 0.02
-        k_c: 0.8 # 0.1 15
+        epsilon: 0.02 # 0.02
+        k_c: 0.8 # 0.8
         mu: 20 # seconds
     sway:
       enable: true # not yet implemented
       coefficients: # sliding surface coefficients for sway integral control
-        lambda: 0.3
-        epsilon: 0.02
-        k_c: 0.8 # 15
+        lambda: 0.3 # 0.3
+        epsilon: 0.02 # 0.02
+        k_c: 0.8 # 0.8
         mu: 20 # seconds
   
   # bluerov vehicle parameters
   bluerov:
     mass: 11.5 # (kg)
     Iz: 0.245 # inertia about the Z axis
-    Xu: -0.1213 # linear damping
+    Xu: -1.1732 # linear damping
     Xdu: -27.08 # hydrodynamic added mass
-    Xuu: -23.9000
+    Xuu: -46.2700
     Yv: -1.1732 # linear damping
     Ydv: -25.952 # hydrodynamic added mass
     Yvv: -46.2700
@@ -114,7 +114,7 @@ sliding_mode:
     Nrr: -1
     # inertia_tensor: [1000.0, 1000.0, 4.14]  # diagonal (3x3) moment of inertia matrix (kg/m2)
     # linear_damping_tensor: [0.0, -55.1, -4.1879, -3000.0, -3000.0, -4.14] # diagonal (6x6) matrix with linear damping
-    # quadratic_damping_tensor: [-27.5, -101.0, -40.9649,  -3000.0, -3000.0, -6.23] # diagonal (6x6) matrix with quadratic damping
+    # quadratic_damping_tensor: [-27.5, -101.0, -40.9649,timeout -k 9 15s rostopic pub /bluerov/ref/sway std_msgs/Float64 "data: 1.0" -r10  -3000.0, -3000.0, -6.23] # diagonal (6x6) matrix with quadratic damping
     # added_mass_tensor: [20.0, 30.0, 80.088, 0.0, 0.0, 0.5] # diagonal (6x6) matrix with added mass terms
 
 inner_loops_pid:
@@ -130,52 +130,78 @@ inner_loops_pid:
 
     # Yaw Params
     controllers:
-      roll_rate:
-          kp: 0.15 #0.002 #100
-          ki: 0.05 #0.0 #1.0
-          kd: 0.02 #0.0 #5.0
-          kff: 0.07
-          max_err:  70.0 # deg
-          min_err: -70.0 # deg  
-          max_out:  70.0  # N.m
-          min_out: -70.0
-          debug: true
-      pitch_rate:
-          kp: 0.0075 #0.2 #0.05
-          #ki: 0.008  #0.0 #0.0 #1.0
-          kd: 0.007 #0.0 #0.3 #5.0
-          kff: 0.0
-          #kff_d: 0.001
-          #kff_lin_drag: 0.005
-          #kff_quad_drag: 0.0
-          max_err:  70.0 # deg
-          min_err: -70.0 # deg  
-          max_out:  70.0  # N.m
-          min_out: -70.0
-          debug: true
-      roll:
-          kp: 0.002 #0.002 #100
-          ki: 0.001 #0.0 #1.0
-          kd: 0.001 #0.0 #5.0
-          max_err:  70.0 # deg
-          min_err: -70.0 # deg  
-          max_out:  70.0  # N.m
-          min_out: -70.0
-          debug: true
-      pitch:
-          kp: 0.008 #0.0075 #0.2 #0.05
-          ki: 0.008  #0.0 #0.0 #1.0
-          kd: 0.007 #0.0 #0.3 #5.0
-          kff: 0.0
-          #kff_d: 0.001
-          #kff_lin_drag: 0.005
-          #kff_quad_drag: 0.0
-          max_err:  30.0 # deg 70
-          min_err: -30.0 # deg -70
-          max_out:  30.0  # N.m 70
-          min_out: -30.0 # -70
-          debug: true
+      # roll_rate:
+      #     kp: 0.15 #0.002 #100
+      #     ki: 0.05 #0.0 #1.0
+      #     kd: 0.02 #0.0 #5.0
+      #     kff: 0.07
+      #     max_err:  70.0 # deg
+      #     min_err: -70.0 # deg  
+      #     max_out:  70.0  # N.m
+      #     min_out: -70.0
+      #     debug: true
+      # pitch_rate:
+      #     kp: 0.0075 #0.2 #0.05
+      #     #ki: 0.008  #0.0 #0.0 #1.0
+      #     kd: 0.007 #0.0 #0.3 #5.0
+      #     kff: 0.0
+      #     #kff_d: 0.001
+      #     #kff_lin_drag: 0.005
+      #     #kff_quad_drag: 0.0
+      #     max_err:  70.0 # deg
+      #     min_err: -70.0 # deg  
+      #     max_out:  70.0  # N.m
+      #     min_out: -70.0
+      #     debug: true
+      # roll:
+      #     kp: 0.002 #0.002 #100
+      #     ki: 0.001 #0.0 #1.0
+      #     kd: 0.001 #0.0 #5.0
+      #     max_err:  70.0 # deg
+      #     min_err: -70.0 # deg  
+      #     max_out:  70.0  # N.m
+      #     min_out: -70.0
+      #     debug: true
+      # pitch:
+      #     kp: 0.008 #0.0075 #0.2 #0.05
+      #     ki: 0.008  #0.0 #0.0 #1.0
+      #     kd: 0.007 #0.0 #0.3 #5.0
+      #     kff: 0.0
+      #     #kff_d: 0.001
+      #     #kff_lin_drag: 0.005
+      #     #kff_quad_drag: 0.0
+      #     max_err:  30.0 # deg 70
+      #     min_err: -30.0 # deg -70
+      #     max_out:  30.0  # N.m 70
+      #     min_out: -30.0 # -70
+      #     debug: true
       # yaw:
+      #     #lpf_fc: 0.5 # low pass filter cutoff frequency
+      #     kp: 0.015
+      #     ki: 0.0 #0.0005
+      #     kd: 0.02 #0.133
+      #     max_err:  100.0 # deg
+      #     min_err: -100.0 # deg  
+      #     max_out:  100.0  # N.m
+      #     min_out: -100.0
+      #     debug: true
+      # # Yaw Rate Params
+      # yaw_rate:
+      #     lpf_fc: 0.5 # low pass filter cutoff frequency
+      #     kp: 0.02
+      #     ki: 0.005 #0.005
+      #     kd: 0.0
+      #     kff: 0.0001 #0.007  = 10/ 10.000
+      #     #kff_d: 0.000125
+      #     #kff_lin_drag: 0.005
+      #     #kff_quad_drag: 0.0
+      #     max_err:  50.0 # deg/s
+      #     min_err: -50.0 # deg/s  
+      #     max_out:  80.0 # N.m
+      #     min_out: -80.0
+      #     debug: true
+      # # Surge Params
+      # surge:yaw:
       #     #lpf_fc: 0.5 # low pass filter cutoff frequency
       #     kp: 0.015
       #     ki: 0.0 #0.0005
@@ -205,7 +231,50 @@ inner_loops_pid:
       #     #lpf_fc: 0.5 # low pass filter cutoff frequency
       #     kp: 15.0 #10.0
       #     ki: 0.0 #1.0
-      #     kff: 24.0 #7.0 40.0
+      #     kff: 48.0 #7.0 40.0 24.0
+      #     #kff_d: 0.0
+      #     kff_lin_drag: 0.0 #50.0
+      #     kff_quad_drag: 0.0 #50.0
+      #     max_ref:  1.2  # m/s
+      #     min_ref: -1.2  # m/s
+      #     max_err:  0.5  # m/s
+      #     min_err: -0.5  # m/s  
+      #     max_out:  81.0 # N
+      #     min_out: -81.0
+      #     debug: true
+      # # Sway Params
+      # sway:
+      #     #lpf_fc: 0.5 # low pass filter cutoff frequency
+      #     kp: 15.0 #10.0 15.0
+      #     ki: 0.0 #1.0
+      #     kff: 48.0 #52.0 48.0
+      #     #kff: 15.0 #7.0
+      #     #kff_d: 10.0
+      #     kff_lin_drag: 0.0
+      #     kff_quad_drag: 0.0
+      #     max_ref:  1.2  # m/s
+      #     min_ref: -1.2  # m/s
+      #     max_err:  0.5  # m/s
+      #     min_err: -0.5  # m/s  
+      #     max_out:  81.0 # N
+      #     min_out: -81.0
+      #     debug: true
+      # # Heave params
+      # heave:
+      #     kp: 20.0
+      #     ki: 5.0
+      #     kff: 80.0 
+      #     max_ref:  1.2  # m/s
+      #     min_ref: -1.2  # m/s
+      #     max_err:  0.5  # m/s
+      #     min_err: -0.5  # m/s  
+      #     max_out:  81.0 # N
+      #     min_out: -81.0
+      #     debug: true
+      #     #lpf_fc: 0.5 # low pass filter cutoff frequency
+      #     kp: 15.0 #10.0
+      #     ki: 0.0 #1.0
+      #     kff: 48.0 #7.0 40.0 24.0
       #     #kff_d: 0.0
       #     kff_lin_drag: 0.0 #50.0
       #     kff_quad_drag: 0.0 #50.0
