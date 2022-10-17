@@ -165,7 +165,7 @@ SlidingMode::SlidingMode(double lambda_yaw, double lambda_surge, double lambda_s
 
 	this->started_control_yaw_ = false;
 	this->started_control_surge_ = false;
-	this->started_control_sway_ = true; // false if path following publishes sway references
+	this->started_control_sway_ = false; // false if path following publishes sway references
 }
 
 SlidingMode::~SlidingMode() {

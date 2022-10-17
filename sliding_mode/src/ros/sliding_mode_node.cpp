@@ -233,7 +233,7 @@ void SlidingModeNode::timerIterCallback(const ros::TimerEvent &event) {
 
   this->got_yaw_ref_ = false;
   this->got_surge_ref_ = false;
-  this->got_sway_ref_ = true; // false if path following sends sway references 
+  this->got_sway_ref_ = false; // false if path following sends sway references 
 }
 
 /**
